@@ -1,0 +1,61 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id       String @id @default(uuid())
+  nombre   String
+  apellido String
+  password String
+  email    String
+  rol      Roles  @default(user)
+}
+
+enum Roles {
+  admin
+  user
+}
+
+model Placas {
+  id             String          @id @default(uuid())
+  N_Placa        String
+  N_Serie        String
+  N_VIN          String
+  N_Motor        String
+  Color          String
+  Marca          String
+  Modelo         String
+  Placa_Vigente  String
+  Placa_Anterior String
+  Estado         String
+  Anotaciones    String
+  Sede           String
+  Propietarios   Propietarios[]
+  SearchHistory  SearchHistory[]
+}
+
+model Propietarios {
+  id       String @id @default(uuid())
+  nombre   String
+  apellido String
+  id_placa String
+  placa    Placas @relation(fields: [id_placa], references: [id], onDelete: Cascade)
+}
+
+model SearchHistory {
+  id             String   @id @default(uuid())
+  id_placa       String
+  fecha_busqueda DateTime @default(now())
+  placa          Placas   @relation(fields: [id_placa], references: [id], onDelete: Cascade)
+}

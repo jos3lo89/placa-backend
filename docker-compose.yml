@@ -1,0 +1,15 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:16.4-alpine3.20
+    environment:
+      POSTGRES_USER: enzo
+      POSTGRES_PASSWORD: 3322
+      POSTGRES_DB: placas
+    ports:
+      - "8000:5432"
+    volumes:
+      - db_data_placas:/var/lib/postgresql/data
+
+volumes:
+  db_data_placas:
