@@ -1,21 +1,16 @@
--- CreateEnum
-CREATE TYPE "Roles" AS ENUM ('admin', 'user');
-
 -- CreateTable
 CREATE TABLE "Users" (
-    "id" TEXT NOT NULL,
+    "id" TEXT NOT NULL PRIMARY KEY,
     "nombre" TEXT NOT NULL,
     "apellido" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "rol" "Roles" NOT NULL DEFAULT 'user',
-
-    CONSTRAINT "Users_pkey" PRIMARY KEY ("id")
+    "rol" TEXT NOT NULL DEFAULT 'user'
 );
 
 -- CreateTable
 CREATE TABLE "Placas" (
-    "id" TEXT NOT NULL,
+    "id" TEXT NOT NULL PRIMARY KEY,
     "N_Placa" TEXT NOT NULL,
     "N_Serie" TEXT NOT NULL,
     "N_VIN" TEXT NOT NULL,
@@ -27,20 +22,23 @@ CREATE TABLE "Placas" (
     "Placa_Anterior" TEXT NOT NULL,
     "Estado" TEXT NOT NULL,
     "Anotaciones" TEXT NOT NULL,
-    "Sede" TEXT NOT NULL,
-
-    CONSTRAINT "Placas_pkey" PRIMARY KEY ("id")
+    "Sede" TEXT NOT NULL
 );
 
 -- CreateTable
 CREATE TABLE "Propietarios" (
-    "id" TEXT NOT NULL,
+    "id" TEXT NOT NULL PRIMARY KEY,
     "nombre" TEXT NOT NULL,
     "apellido" TEXT NOT NULL,
     "id_placa" TEXT NOT NULL,
-
-    CONSTRAINT "Propietarios_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Propietarios_id_placa_fkey" FOREIGN KEY ("id_placa") REFERENCES "Placas" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- AddForeignKey
-ALTER TABLE "Propietarios" ADD CONSTRAINT "Propietarios_id_placa_fkey" FOREIGN KEY ("id_placa") REFERENCES "Placas"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+-- CreateTable
+CREATE TABLE "SearchHistory" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "id_placa" TEXT NOT NULL,
+    "fecha_busqueda" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "tipo" TEXT NOT NULL,
+    CONSTRAINT "SearchHistory_id_placa_fkey" FOREIGN KEY ("id_placa") REFERENCES "Placas" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);

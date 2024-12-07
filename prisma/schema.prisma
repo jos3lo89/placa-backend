@@ -19,7 +19,7 @@ model Users {
   apellido String
   password String
   email    String
-  rol      String  @default("user")
+  rol      String @default("user")
 }
 
 model Placas {
@@ -52,5 +52,6 @@ model SearchHistory {
   id             String   @id @default(uuid())
   id_placa       String
   fecha_busqueda DateTime @default(now())
+  tipo           String // Nuevo campo para entrada/salida
   placa          Placas   @relation(fields: [id_placa], references: [id], onDelete: Cascade)
 }

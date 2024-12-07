@@ -3,7 +3,7 @@ import db from "../config/db.js";
 
 const route = Router();
 
-route.get("/placa/:placa", async (req, res) => {
+route.get("/placa-entrada/:placa", async (req, res) => {
   try {
     const { placa } = req.params;
     console.log(placa);
@@ -24,6 +24,7 @@ route.get("/placa/:placa", async (req, res) => {
     await db.searchHistory.create({
       data: {
         id_placa: placaFound.id,
+        tipo: "entrada",
       },
     });
 
@@ -34,7 +35,39 @@ route.get("/placa/:placa", async (req, res) => {
   }
 });
 
-route.get("/placa/search-history/:fecha", async (req, res) => {
+route.get("/placa-salida/:placa", async (req, res) => {
+  try {
+    const { placa } = req.params;
+    console.log(placa);
+
+    const placaFound = await db.placas.findFirst({
+      where: {
+        N_Placa: placa,
+      },
+      include: {
+        Propietarios: true,
+      },
+    });
+
+    if (!placaFound) {
+      return res.status(400).json({ message: "Placa no encontrada" });
+    }
+
+    await db.searchHistory.create({
+      data: {
+        id_placa: placaFound.id,
+        tipo: "salida",
+      },
+    });
+
+    res.status(200).json(placaFound);
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ message: "Eror al buscar la placa" });
+  }
+});
+
+route.get("/search-history/entrada/:fecha", async (req, res) => {
   try {
     const { fecha } = req.params;
 
